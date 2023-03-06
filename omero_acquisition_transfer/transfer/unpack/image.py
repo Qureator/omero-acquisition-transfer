@@ -1,22 +1,20 @@
-from typing import Optional, Dict, Any
+# Copyright (c) 2023 Qureator, Inc. All rights reserved.
 
-from ome_types import OME
+from typing import Dict, Any
+
 from ome_types.model import (
     Image,
     Pixels,
     ObjectiveSettings,
     ImagingEnvironment,
 )
+from omero.gateway import BlitzGateway, ImageWrapper
 from omero.model import (
-    ImageI,
     ObjectiveSettingsI,
     ImagingEnvironmentI,
 )
-from omero.gateway import BlitzGateway, ImageWrapper
-
-from omero_voxel.ome.transfer.unpack.common import update_metadata, update_length_metadata, update_enum_metadata
 from omero_voxel.ome.transfer.unpack.channel import attach_channels_metadata
-from omero_voxel.ome.transfer.unpack.roi import create_rois
+from omero_voxel.ome.transfer.unpack.common import update_metadata, update_length_metadata, update_enum_metadata
 
 
 def attach_image_metadata(

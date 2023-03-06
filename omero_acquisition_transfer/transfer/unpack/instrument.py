@@ -1,3 +1,5 @@
+# Copyright (c) 2023 Qureator, Inc. All rights reserved.
+
 from typing import List, Dict, Any, Union
 
 from ome_types.model import (

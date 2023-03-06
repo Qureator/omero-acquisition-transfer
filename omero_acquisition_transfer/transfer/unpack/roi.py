@@ -1,3 +1,5 @@
+# Copyright (c) 2023 Qureator, Inc. All rights reserved.
+
 from typing import Any, Dict, List
 from ome_types.model import (
     ROIRef, ROI

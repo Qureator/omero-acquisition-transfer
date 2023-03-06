@@ -1,4 +1,4 @@
-import os
+# Copyright (c) 2023 Qureator, Inc. All rights reserved.
 
 import omero
 from getpass import getpass

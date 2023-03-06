@@ -1,3 +1,5 @@
+# Copyright (c) 2023 Qureator, Inc. All rights reserved.
+
 from datetime import datetime
 from typing import Optional, List
 

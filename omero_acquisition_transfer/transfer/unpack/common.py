@@ -1,6 +1,7 @@
+# Copyright (c) 2023 Qureator, Inc. All rights reserved.
+
 from typing import Any
 
-import omero.model
 from omero.gateway import BlitzGateway
 from omero.rtypes import rstring, rint, rdouble, rlong
 from omero.model import LengthI
