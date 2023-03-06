@@ -3,7 +3,7 @@
 import omero
 from getpass import getpass
 from omero.gateway import BlitzGateway, ImageWrapper
-from omero_voxel.ome import export_image_metadata
+from omero_acquisition_transfer import export_image_metadata
 from ome_types import OME
 
 

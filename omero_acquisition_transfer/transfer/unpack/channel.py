@@ -23,7 +23,7 @@ from omero.model import (
     DetectorSettingsI,
 )
 
-from omero_voxel.ome.transfer.unpack.common import update_metadata, update_length_metadata, update_enum_metadata
+from omero_acquisition_transfer.transfer.unpack.common import update_metadata, update_length_metadata, update_enum_metadata
 
 
 def attach_channels_metadata(
