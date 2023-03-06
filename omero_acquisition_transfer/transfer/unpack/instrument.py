@@ -60,7 +60,7 @@ def create_instrument(instrument: Instrument, conn: BlitzGateway) -> Dict[str, A
     res, instrument_obj = create_dichroics(instrument.dichroics, instrument_obj, conn)
     omero_id_to_objects.update(res)
 
-    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj)
+    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj, conn.SERVICE_OPTS)
     omero_id_to_objects[instrument.id] = instrument_obj
 
     return omero_id_to_objects
@@ -88,7 +88,7 @@ def create_microscope(
 
     instrument_obj = InstrumentI(instrument_obj.id)
     instrument_obj.setMicroscope(microscope_obj)
-    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj)
+    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj, conn.SERVICE_OPTS)
 
     # A Microscope doesn't have an ID
     return {}, instrument_obj
@@ -105,7 +105,7 @@ def create_light_sources(
 
         instrument_obj.addLightSource(res[light_source.id])
 
-    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj)
+    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj, conn.SERVICE_OPTS)
 
     return omero_id_to_obj, instrument_obj
 
@@ -153,7 +153,7 @@ def create_light_source(
 
     update_length_metadata(light_source_obj, 'power', light_source.power, light_source.power_unit)
 
-    light_source_obj = conn.getUpdateService().saveAndReturnObject(light_source_obj)
+    light_source_obj = conn.getUpdateService().saveAndReturnObject(light_source_obj, conn.SERVICE_OPTS)
 
     return {light_source.id: light_source_obj}
 
@@ -169,7 +169,7 @@ def create_detectors(
         omero_id_to_obj.update(res)
 
         instrument_obj.addDetector(res[detector.id])
-    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj)
+    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj, conn.SERVICE_OPTS)
 
     return omero_id_to_obj, instrument_obj
 
@@ -196,7 +196,7 @@ def create_detector(
     update_metadata(detector_obj, 'zoom', detector.zoom)
     update_metadata(detector_obj, 'amplificationGain', detector.amplification_gain)
 
-    detector_obj = conn.getUpdateService().saveAndReturnObject(detector_obj)
+    detector_obj = conn.getUpdateService().saveAndReturnObject(detector_obj, conn.SERVICE_OPTS)
 
     return {detector.id: detector_obj}
 
@@ -212,7 +212,7 @@ def create_objectives(
         omero_id_to_obj.update(res)
 
         instrument_obj.addObjective(res[objective.id])
-    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj)
+    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj, conn.SERVICE_OPTS)
 
     return omero_id_to_obj, instrument_obj
 
@@ -238,7 +238,7 @@ def create_objective(
     update_length_metadata(objective_obj, 'workingDistance', objective.working_distance, objective.working_distance_unit)
     update_metadata(objective_obj, 'iris', objective.iris)
 
-    objective_obj = conn.getUpdateService().saveAndReturnObject(objective_obj)
+    objective_obj = conn.getUpdateService().saveAndReturnObject(objective_obj, conn.SERVICE_OPTS)
 
     return {objective.id: objective_obj}
 
@@ -254,7 +254,7 @@ def create_filters(
         omero_id_to_obj.update(res)
 
         instrument_obj.addFilter(res[filter_.id])
-    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj)
+    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj, conn.SERVICE_OPTS)
 
     return omero_id_to_obj, instrument_obj
 
@@ -282,7 +282,7 @@ def create_filter(
 
         filter_obj.setTransmittanceRange(tr_range_obj)
 
-    filter_obj = conn.getUpdateService().saveAndReturnObject(filter_obj)
+    filter_obj = conn.getUpdateService().saveAndReturnObject(filter_obj, conn.SERVICE_OPTS)
     return {filter_.id: filter_obj}
 
 
@@ -297,7 +297,7 @@ def create_dichroics(
         omero_id_to_obj.update(res)
 
         instrument_obj.addDichroic(res[dichroic.id])
-    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj)
+    instrument_obj = conn.getUpdateService().saveAndReturnObject(instrument_obj, conn.SERVICE_OPTS)
 
     return omero_id_to_obj, instrument_obj
 
@@ -314,6 +314,6 @@ def create_dichroic(
 
     dichroic_obj.setInstrument(instrument_obj)
 
-    dichroic_obj = conn.getUpdateService().saveAndReturnObject(dichroic_obj)
+    dichroic_obj = conn.getUpdateService().saveAndReturnObject(dichroic_obj, conn.SERVICE_OPTS)
 
     return {dichroic.id: dichroic_obj}

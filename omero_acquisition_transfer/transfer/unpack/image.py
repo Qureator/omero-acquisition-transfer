@@ -77,7 +77,7 @@ def attach_objective_settings_metadata(
 
     os_obj.setObjective(omero_id_to_object[objective_settings.id])
 
-    os_obj = conn.getUpdateService().saveAndReturnObject(os_obj)
+    os_obj = conn.getUpdateService().saveAndReturnObject(os_obj, conn.SERVICE_OPTS)
     image_obj.setObjectiveSettings(os_obj)
     image_obj.save()
 
@@ -97,7 +97,7 @@ def attach_imaging_environment_metadata(
     update_metadata(ie_obj, 'humidity', imaging_environment.humidity)
     update_metadata(ie_obj, 'co2percent', imaging_environment.co2_percent)
 
-    ie_obj = conn.getUpdateService().saveAndReturnObject(ie_obj)
+    ie_obj = conn.getUpdateService().saveAndReturnObject(ie_obj, conn.SERVICE_OPTS)
     image_obj.setImagingEnvironment(ie_obj)
 
     image_obj.save()
