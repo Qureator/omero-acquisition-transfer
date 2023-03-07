@@ -33,6 +33,7 @@ def attach_image_metadata(
     if image.instrument_ref is not None:
         instrument = omero_id_to_object[image.instrument_ref.id]
         image_obj.setInstrument(instrument)
+        image_obj.save()
 
     if image.objective_settings is not None:
         attach_objective_settings_metadata(image.objective_settings, image_obj, omero_id_to_object, conn)
