@@ -47,8 +47,6 @@ def attach_image_metadata(
     # if image.roi_ref is not None:
     #    create_rois(image.roi_ref, ome.rois, image_obj)
 
-    image_obj.save()
-
 
 def attach_pixels_metadata(
         pixels: Pixels, image_obj: ImageWrapper, conn: BlitzGateway, omero_id_to_object: Dict[str, Any]
@@ -62,6 +60,7 @@ def attach_pixels_metadata(
     update_metadata(image_obj, 'sizeT', pixels.size_t)
 
     attach_channels_metadata(pixels.channels, image_obj, conn, omero_id_to_object)
+    image_obj.save()
 
 
 def attach_objective_settings_metadata(
@@ -100,5 +99,4 @@ def attach_imaging_environment_metadata(
 
     ie_obj = conn.getUpdateService().saveAndReturnObject(ie_obj, conn.SERVICE_OPTS)
     image_obj.setImagingEnvironment(ie_obj)
-
     image_obj.save()
