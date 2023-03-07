@@ -34,7 +34,8 @@ def attach_channels_metadata(
 ) -> None:
     channel_objs = image_obj.getChannels()
 
-    assert len(channel_objs) == len(channels)
+    assert len(channel_objs) == len(channels), f'Number of channels in image {image_obj.id} {len(channels)} ' \
+                                               f'does not match number of channels {len(channel_objs)} in OME-TIFF'
 
     for ch_obj, channel in zip(channel_objs, channels):
         ch_obj = attach_channel_metadata(channel, ch_obj, conn, omero_id_to_obj)
