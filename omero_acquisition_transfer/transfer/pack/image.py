@@ -41,14 +41,26 @@ def export_image_metadata(image_obj: ImageWrapper, conn: BlitzGateway, ome: OME,
     pixels: Pixels = export_pixels_metadata(image_obj)
     rois_ref: Optional[List[ROIRef]] = export_attach_rois_metadata(image_obj, conn, ome)
 
-    image = Image(
-        id=id_,
-        name=name,
-        acquisition_date=acquisition_date,
-        description=desc,
-        pixels=pixels,
-        roi_ref=rois_ref,
-    )
+    indices = [int(img.id.split(':')[-1]) for img in ome.images]
+
+    if id_ not in indices:
+        image = Image(
+            id=id_,
+            name=name,
+            acquisition_date=acquisition_date,
+            description=desc,
+            pixels=pixels,
+            # roi_ref=rois_ref,
+        )
+        print(f"Adding image {id_} to OME")
+    else:
+        image = ome.images[indices.index(id_)]
+        image.name = name
+        image.acquisition_date = acquisition_date
+        image.description = desc
+        image.pixels = pixels
+        # image.roi_ref = roi_ref # Not implemented
+        print(f"Updating image {id_} in OME")
 
     if image_obj.getInstrument() is not None:
         instrument_ref: Optional[InstrumentRef] = InstrumentRef(id=image_obj.getInstrument().getId())
