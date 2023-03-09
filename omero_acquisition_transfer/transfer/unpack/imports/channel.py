@@ -17,8 +17,7 @@ from omero.gateway import (
     LogicalChannelWrapper
 )
 from omero.model import (
-    ChannelI, LogicalChannelI,
-    LightPathI, LightPathEmissionFilterLinkI, LightPathExcitationFilterLinkI,
+    ChannelI, LightPathI, LightPathEmissionFilterLinkI, LightPathExcitationFilterLinkI,
     LightSettingsI,
     DetectorSettingsI,
 )

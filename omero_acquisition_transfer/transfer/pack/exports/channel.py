@@ -11,12 +11,11 @@ from ome_types.model import (
 )
 from omero.gateway import ChannelWrapper
 from omero.model import (
-    ChannelI,
     DetectorSettingsI, DetectorI,
     LightSettingsI, LightPathI,
 )
 
-from omero_acquisition_transfer.transfer.pack.common import convert_units
+from omero_acquisition_transfer.transfer.pack.export.common import convert_units
 
 
 def export_channel_metadata(ch_obj: ChannelWrapper):

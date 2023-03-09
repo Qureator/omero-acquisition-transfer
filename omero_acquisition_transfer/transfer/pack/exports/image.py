@@ -23,10 +23,10 @@ from omero.model import (
     ImagingEnvironmentI
 )
 
-from omero_acquisition_transfer.transfer.pack.channel import export_channel_metadata
-from omero_acquisition_transfer.transfer.pack.common import convert_units
-from omero_acquisition_transfer.transfer.pack.instrument import export_instrument_metadata
-from omero_acquisition_transfer.transfer.pack.roi import export_attach_rois_metadata
+from omero_acquisition_transfer.transfer.pack.export.channel import export_channel_metadata
+from omero_acquisition_transfer.transfer.pack.export.common import convert_units
+from omero_acquisition_transfer.transfer.pack.export.instrument import export_instrument_metadata
+from omero_acquisition_transfer.transfer.pack.export.roi import export_attach_rois_metadata
 
 
 def export_image_metadata(image_obj: ImageWrapper, conn: BlitzGateway, ome: OME, in_place: bool = True) -> Image:
