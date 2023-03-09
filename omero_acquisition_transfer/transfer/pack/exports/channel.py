@@ -15,7 +15,7 @@ from omero.model import (
     LightSettingsI, LightPathI,
 )
 
-from omero_acquisition_transfer.transfer.pack.export.common import convert_units
+from .common import convert_units
 
 
 def export_channel_metadata(ch_obj: ChannelWrapper):
