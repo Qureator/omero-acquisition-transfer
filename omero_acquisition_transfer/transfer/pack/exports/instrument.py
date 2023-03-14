@@ -21,7 +21,7 @@ from omero.model import (
     DichroicI,
 )
 
-from omero_acquisition_transfer.transfer.pack.common import convert_units
+from .common import convert_units
 
 
 def export_instrument_metadata(instrument_obj: InstrumentI) -> Instrument:

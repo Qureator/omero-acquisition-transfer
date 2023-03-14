@@ -17,13 +17,12 @@ from omero.gateway import (
     LogicalChannelWrapper
 )
 from omero.model import (
-    ChannelI, LogicalChannelI,
-    LightPathI, LightPathEmissionFilterLinkI, LightPathExcitationFilterLinkI,
+    ChannelI, LightPathI, LightPathEmissionFilterLinkI, LightPathExcitationFilterLinkI,
     LightSettingsI,
     DetectorSettingsI,
 )
 
-from omero_acquisition_transfer.transfer.unpack.common import update_metadata, update_length_metadata, update_enum_metadata
+from .common import update_metadata, update_length_metadata, update_enum_metadata
 
 
 def attach_channels_metadata(

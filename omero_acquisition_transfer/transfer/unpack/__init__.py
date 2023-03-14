@@ -1,2 +1,1 @@
-from .image import attach_image_metadata
-from .instrument import create_instruments
+from .imports import attach_image_metadata, create_instruments
