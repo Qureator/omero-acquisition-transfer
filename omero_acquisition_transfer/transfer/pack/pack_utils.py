@@ -58,7 +58,7 @@ def move_tiff_files(
         target_ids: List[int],
         tiff_paths: List[str],
         folder: str,
-):
+) -> List[str]:
     """Move tiff files by their screen/plate/dataset/project folder structure.
 
     Parameters
@@ -82,10 +82,7 @@ def move_tiff_files(
         Folder name to save tiff files.
     """
 
-    if target_type == 'Image':
-        return None
-
-    if target_type not in {'Screen', 'Plate', 'Dataset', 'Project'}:
+    if target_type not in {'Screen', 'Plate', 'Dataset', 'Project', 'Image'}:
         raise ValueError('Data type not supported.')
 
     # Get sorted tiff paths by their data type
@@ -102,9 +99,11 @@ def move_tiff_files(
     else:
         raise ValueError('Data type not supported.')
 
+    tiff_paths_sorted = [os.path.join('pixel_images', path) for path in tiff_paths_sorted]
+
     # Move tiff files with sorted tiff paths
     for source_path, dest_path in zip(tiff_paths, tiff_paths_sorted):
-        dest_path = os.path.join(folder, 'pixel_images', dest_path)
+        dest_path = os.path.join(folder, dest_path)
         os.makedirs(os.path.dirname(dest_path), exist_ok=True)
         os.rename(source_path, dest_path)
 
