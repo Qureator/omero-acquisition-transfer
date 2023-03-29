@@ -148,6 +148,16 @@ def export_pixels_metadata(image_obj: ImageWrapper) -> Pixels:
         type=pix_obj.getPixelsType().getValue(),
         metadata_only=True)
 
+    if pix_obj.getPhysicalSizeX() is not None:
+        pixels.physical_size_x = pix_obj.getPhysicalSizeX().getValue()
+        pixels.physical_size_x_unit = convert_units(pix_obj.getPhysicalSizeX().getUnit())
+    if pix_obj.getPhysicalSizeY() is not None:
+        pixels.physical_size_y = pix_obj.getPhysicalSizeY().getValue()
+        pixels.physical_size_y_unit = convert_units(pix_obj.getPhysicalSizeY().getUnit())
+    if pix_obj.getPhysicalSizeZ() is not None:
+        pixels.physical_size_z = pix_obj.getPhysicalSizeZ().getValue()
+        pixels.physical_size_z_unit = convert_units(pix_obj.getPhysicalSizeZ().getUnit())
+
     for ch_obj in image_obj.getChannels():
         channel = export_channel_metadata(ch_obj)
         pixels.channels.append(channel)
