@@ -25,6 +25,9 @@ from .common import convert_units
 
 
 def export_instrument_metadata(instrument_obj: InstrumentI) -> Instrument:
+    if not instrument_obj:
+        return Instrument()
+
     # Instrument
     id_: str = instrument_obj.getId()
     name: Optional[str] = instrument_obj.getName()
