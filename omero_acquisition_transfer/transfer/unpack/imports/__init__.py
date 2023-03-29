@@ -1,4 +1,4 @@
-from channel import (
+from .channel import (
     create_light_path,
     create_light_source_settings,
     create_detector_settings,
@@ -6,14 +6,14 @@ from channel import (
     attach_channel_metadata,
     attach_logical_channel_metadata
 )
-from common import update_metadata, update_length_metadata, update_enum_metadata
-from image import (
+from .common import update_metadata, update_length_metadata, update_enum_metadata
+from .image import (
     attach_image_metadata,
     attach_pixels_metadata,
     attach_imaging_environment_metadata,
     attach_objective_settings_metadata
 )
-from instrument import (
+from .instrument import (
     create_instrument, create_instruments,
     create_microscope,
     create_filters,
