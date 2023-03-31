@@ -288,9 +288,9 @@ def rename_tiff_paths_by_image(conn: BlitzGateway, image_ids: List[int], tiff_pa
     tiff_paths_map = {}
     for image_id in image_ids:
         image = conn.getObject('Image', image_id)
-        image_name = image.getName().replace(',', '_').replace(' ', '_')
+        well_position = image.getWellSample().getWell().getWellPos()
         tiff_paths_map[image.getId()] = os.path.join(
-            f'Image-{image.getId()}-{image_name}.tiff'
+            f'{well_position}-{image.getId()}.tiff'
         )
 
     tiff_paths_sorted = []
