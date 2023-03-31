@@ -19,6 +19,7 @@ VERSION = "0.0.1"
 REQUIRED = [
     "omero-py>=5.6.0",
     "ome-types>=0.3.2",
+    "tifftools",
 ]
 
 # What packages are optional?

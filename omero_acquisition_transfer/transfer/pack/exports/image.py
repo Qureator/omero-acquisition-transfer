@@ -11,7 +11,8 @@ from ome_types.model import (
     InstrumentRef,
     ObjectiveSettings,
     ImagingEnvironment,
-    ROIRef
+    ROIRef,
+    StageLabel,
 )
 from omero.gateway import (
     ImageWrapper,
@@ -20,7 +21,8 @@ from omero.gateway import (
 from omero.model import (
     PixelsI,
     ObjectiveSettingsI,
-    ImagingEnvironmentI
+    ImagingEnvironmentI,
+    StageLabelI,
 )
 
 from .channel import export_channel_metadata
@@ -78,10 +80,42 @@ def export_image_metadata(image_obj: ImageWrapper, conn: BlitzGateway, ome: OME,
         imaging_environment: Optional[ImagingEnvironment] = export_imaging_environment_metadata(image_obj.getImagingEnvironment())
         image.imaging_environment = imaging_environment
 
+    if image_obj.getStageLabel() is not None:
+        stage_label: Optional[StageLabel] = export_stage_label_metadata(image_obj.getStageLabel())
+        image.stage_label = stage_label
+
     if in_place:
         ome.images.append(image)
 
     return image
+
+
+def export_stage_label_metadata(sl_obj: StageLabelI) -> Optional[StageLabel]:
+    if sl_obj:
+        name: str = sl_obj.getName()
+        x: Optional[float] = None if not sl_obj.getPositionX() else sl_obj.getPositionX().getValue()
+        x_unit: Optional[str] = None if not sl_obj.getPositionX() else sl_obj.getPositionX().getUnit()
+        y: Optional[float] = None if not sl_obj.getPositionY() else sl_obj.getPositionY().getValue()
+        y_unit: Optional[str] = None if not sl_obj.getPositionY() else sl_obj.getPositionY().getUnit()
+        z: Optional[float] = None if not sl_obj.getPositionZ() else sl_obj.getPositionZ().getValue()
+        z_unit: Optional[str] = None if not sl_obj.getPositionZ() else sl_obj.getPositionZ().getUnit()
+
+        sl = StageLabel(
+            name=name,
+        )
+
+        if x is not None:
+            sl.x = x
+            sl.x_unit = convert_units(x_unit)
+        if y is not None:
+            sl.y = y
+            sl.y_unit = convert_units(y_unit)
+        if z is not None:
+            sl.z = z
+            sl.z_unit = convert_units(z_unit)
+
+        return sl
+    return None
 
 
 def export_objective_settings_metadata(os_obj: ObjectiveSettingsI) -> Optional[ObjectiveSettings]:
@@ -147,6 +181,16 @@ def export_pixels_metadata(image_obj: ImageWrapper) -> Pixels:
         size_z=pix_obj.getSizeZ(),
         type=pix_obj.getPixelsType().getValue(),
         metadata_only=True)
+
+    if pix_obj.getPhysicalSizeX() is not None:
+        pixels.physical_size_x = pix_obj.getPhysicalSizeX().getValue()
+        pixels.physical_size_x_unit = convert_units(pix_obj.getPhysicalSizeX().getUnit())
+    if pix_obj.getPhysicalSizeY() is not None:
+        pixels.physical_size_y = pix_obj.getPhysicalSizeY().getValue()
+        pixels.physical_size_y_unit = convert_units(pix_obj.getPhysicalSizeY().getUnit())
+    if pix_obj.getPhysicalSizeZ() is not None:
+        pixels.physical_size_z = pix_obj.getPhysicalSizeZ().getValue()
+        pixels.physical_size_z_unit = convert_units(pix_obj.getPhysicalSizeZ().getUnit())
 
     for ch_obj in image_obj.getChannels():
         channel = export_channel_metadata(ch_obj)

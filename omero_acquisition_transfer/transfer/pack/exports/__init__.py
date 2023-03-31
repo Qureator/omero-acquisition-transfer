@@ -10,7 +10,8 @@ from .image import (
     export_image_metadata,
     export_objective_settings_metadata,
     export_pixels_metadata,
-    export_imaging_environment_metadata
+    export_imaging_environment_metadata,
+    export_stage_label_metadata,
 )
 from .instrument import (
     export_instrument_metadata,
