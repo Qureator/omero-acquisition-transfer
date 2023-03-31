@@ -58,6 +58,7 @@ def attach_stage_label_metadata(
 ) -> None:
     sl_obj = StageLabelI()
 
+    update_metadata(sl_obj, 'name', stage_label.name)
     update_length_metadata(sl_obj, 'x', stage_label.x, stage_label.x_unit)
     update_length_metadata(sl_obj, 'y', stage_label.y, stage_label.y_unit)
     update_length_metadata(sl_obj, 'z', stage_label.z, stage_label.z_unit)
