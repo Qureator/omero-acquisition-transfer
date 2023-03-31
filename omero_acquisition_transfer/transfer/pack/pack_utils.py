@@ -1,6 +1,7 @@
 import os
+import string
 import tifftools
-from typing import List
+from typing import List, Optional
 from ome_types import OME, to_dict, to_xml
 from ome_types.model import InstrumentRef
 from omero.gateway import BlitzGateway, ImageWrapper
@@ -95,7 +96,7 @@ def move_tiff_files(
     elif target_type == 'Project':
         tiff_paths_sorted = rename_tiff_paths_by_project(conn, target_ids, tiff_paths)
     elif target_type == 'Image':
-        tiff_paths_sorted = rename_tiff_paths_by_image(conn, target_ids, tiff_paths)
+        tiff_paths_sorted = rename_tiff_paths_by_image(conn, target_ids, tiff_paths, add_name=True)
     else:
         raise ValueError('Data type not supported.')
 
@@ -177,11 +178,11 @@ def rename_tiff_paths_by_plate(conn: BlitzGateway, plate_ids: List[int], tiff_pa
             for ws in well.listChildren():
                 image = ws.image()
                 image_ids.append(image.getId())
-                tiff_paths_map[image.getId()] = 'Plate-' + str(plate_id)
+                tiff_paths_map[image.getId()] = os.path.join('Plate-' + str(plate_id), well.getWellPos() + '-')
 
     tiff_paths_sorted = rename_tiff_paths_by_image(conn, image_ids, tiff_paths)
     tiff_paths_sorted = [
-        os.path.join(tiff_paths_map[image_id], value)
+        tiff_paths_map[image_id] + value
         for image_id, value in zip(image_ids, tiff_paths_sorted)
     ]
 
@@ -217,7 +218,7 @@ def rename_tiff_paths_by_dataset(conn: BlitzGateway, dataset_ids: List[int], tif
             image_ids.append(image.getId())
             tiff_paths_map[image.getId()] = 'Dataset-' + str(dataset.getId())
 
-    tiff_paths_sorted = rename_tiff_paths_by_image(conn, image_ids, tiff_paths)
+    tiff_paths_sorted = rename_tiff_paths_by_image(conn, image_ids, tiff_paths, add_name=True)
     tiff_paths_sorted = [
         os.path.join(tiff_paths_map[image_id], value)
         for image_id, value in zip(image_ids, tiff_paths_sorted)
@@ -264,7 +265,7 @@ def rename_tiff_paths_by_project(conn: BlitzGateway, project_ids: List[int], tif
     return tiff_paths_sorted
 
 
-def rename_tiff_paths_by_image(conn: BlitzGateway, image_ids: List[int], tiff_paths: List[str]) -> List[str]:
+def rename_tiff_paths_by_image(conn: BlitzGateway, image_ids: List[int], tiff_paths: List[str], add_name: bool=False) -> List[str]:
     """Sort tiff paths by their screen/plate/dataset/project folder structure.
 
     Parameters
@@ -280,18 +281,29 @@ def rename_tiff_paths_by_image(conn: BlitzGateway, image_ids: List[int], tiff_pa
         The name should be constructed their image ID.
         e.g. pixel_datas/100001.tiff, pixel_datas/100002.tiff, ...
 
+    add_name : bool
+        Add image name to the tiff path.
+
     Returns
     -------
     tiff_paths_sorted : list [str]
         List of sorted tiff file paths.
     """
+    def clean_name(name: str, valid_chars: Optional[str] = None) -> str:
+        if valid_chars is None:
+            valid_chars = '-_.() %s%s' % (string.ascii_letters, string.digits)
+
+        cleaned_name = ''.join(c for c in name if c in valid_chars)
+        return cleaned_name
+
     tiff_paths_map = {}
     for image_id in image_ids:
         image = conn.getObject('Image', image_id)
-        well_position = image.getWellSample().getWell().getWellPos()
-        tiff_paths_map[image.getId()] = os.path.join(
-            f'{well_position}-{image.getId()}.tiff'
-        )
+        if add_name:
+            cleaned_name = clean_name(image.getName())
+            tiff_paths_map[image.getId()] = f'{cleaned_name}-{image.getId()}.tiff'
+        else:
+            tiff_paths_map[image.getId()] = f'{image.getId()}.tiff'
 
     tiff_paths_sorted = []
     for tiff_path in tiff_paths:
