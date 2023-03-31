@@ -11,5 +11,6 @@ from .exports import (
     export_pixels_metadata,
     export_imaging_environment_metadata,
     export_objective_settings_metadata,
+    export_stage_label_metadata,
 )
 from .pack_utils import merge_metadata_tiff, move_tiff_files

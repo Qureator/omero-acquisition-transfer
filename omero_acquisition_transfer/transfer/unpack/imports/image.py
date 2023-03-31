@@ -7,11 +7,13 @@ from ome_types.model import (
     Pixels,
     ObjectiveSettings,
     ImagingEnvironment,
+    StageLabel,
 )
 from omero.gateway import BlitzGateway, ImageWrapper
 from omero.model import (
     ObjectiveSettingsI,
     ImagingEnvironmentI,
+    StageLabelI,
 )
 from .channel import attach_channels_metadata
 from .common import update_metadata, update_length_metadata, update_enum_metadata
@@ -44,8 +46,27 @@ def attach_image_metadata(
     if image.pixels is not None:
         attach_pixels_metadata(image.pixels, image_obj, conn, omero_id_to_object)
 
+    if image.stage_label is not None:
+        attach_stage_label_metadata(image.stage_label, image_obj, conn)
+
     # if image.roi_ref is not None:
     #    create_rois(image.roi_ref, ome.rois, image_obj)
+
+
+def attach_stage_label_metadata(
+        stage_label: StageLabel, image_obj: ImageWrapper, conn: BlitzGateway
+) -> None:
+    sl_obj = StageLabelI()
+
+    update_length_metadata(sl_obj, 'x', stage_label.x, stage_label.x_unit)
+    update_length_metadata(sl_obj, 'y', stage_label.y, stage_label.y_unit)
+    update_length_metadata(sl_obj, 'z', stage_label.z, stage_label.z_unit)
+
+    image_obj.setStageLabel(sl_obj)
+
+    sl_obj = conn.getUpdateService().saveAndReturnObject(sl_obj)
+    image_obj.setStageLabel(sl_obj)
+    image_obj.save()
 
 
 def attach_pixels_metadata(
