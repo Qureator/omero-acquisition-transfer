@@ -4,7 +4,7 @@ from typing import Any
 
 from omero.gateway import BlitzGateway
 from omero.rtypes import rstring, rint, rdouble, rlong
-from omero.model import LengthI
+from omero.model import LengthI, TimeI
 from omero.model.enums import UnitsLength
 
 
@@ -29,7 +29,10 @@ def update_length_metadata(obj: Any, name: str, metadata: Any, unit: UnitsLength
     status = False
 
     if metadata is not None:
-        setattr(obj, name, LengthI(metadata, unit.name))
+        if unit.name in {'SECOND'}:
+            setattr(obj, name, TimeI(metadata, unit.name))
+        else:
+            setattr(obj, name, LengthI(metadata, unit.name))
         status = True
 
     return status

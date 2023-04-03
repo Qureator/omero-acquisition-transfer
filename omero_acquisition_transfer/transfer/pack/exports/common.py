@@ -4,6 +4,8 @@ unit_converter = {
     "NANOMETER": "nm",
     "MICROMETER": "µm",
     "MILLIMETER": "mm",
+    "SECOND": "s",
+    "REFERENCEFRAME": "reference frame",
 }
 
 

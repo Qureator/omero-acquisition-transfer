@@ -14,6 +14,7 @@ from omero.model import (
     ObjectiveSettingsI,
     ImagingEnvironmentI,
     StageLabelI,
+    PlaneInfoI,
 )
 from .channel import attach_channels_metadata
 from .common import update_metadata, update_length_metadata, update_enum_metadata
@@ -81,8 +82,36 @@ def attach_pixels_metadata(
     update_metadata(image_obj, 'sizeC', pixels.size_c)
     update_metadata(image_obj, 'sizeT', pixels.size_t)
 
+    attach_planes_metadata(pixels, image_obj, conn)
     attach_channels_metadata(pixels.channels, image_obj, conn, omero_id_to_object)
     image_obj.save()
+
+
+def attach_planes_metadata(pixels: Pixels, image_obj: ImageWrapper, conn: BlitzGateway) -> None:
+    if pixels.planes is None:
+        return
+
+    # Load image with plane info seq
+    query_service = conn.getQueryService()
+    image_obj = query_service.findByQuery(
+        "from Image as i left outer join fetch i.pixels p left outer join fetch p.planeInfo "
+        f"where i.id = {image_obj.getId()}", None
+    )
+
+    for plane in pixels.planes:
+        plane_obj = PlaneInfoI()
+        update_length_metadata(plane_obj, 'deltaT', plane.delta_t, plane.delta_t_unit)
+        update_length_metadata(plane_obj, 'exposureTime', plane.exposure_time, plane.exposure_time_unit)
+        update_length_metadata(plane_obj, 'positionX', plane.position_x, plane.position_x_unit)
+        update_length_metadata(plane_obj, 'positionY', plane.position_y, plane.position_y_unit)
+        update_length_metadata(plane_obj, 'positionZ', plane.position_z, plane.position_z_unit)
+        update_metadata(plane_obj, 'theC', plane.the_c)
+        update_metadata(plane_obj, 'theT', plane.the_t)
+        update_metadata(plane_obj, 'theZ', plane.the_z)
+
+        image_obj.getPrimaryPixels().addPlaneInfo(plane_obj)
+
+    conn.getUpdateService().saveObject(image_obj.getPrimaryPixels(), conn.SERVICE_OPTS)
 
 
 def attach_objective_settings_metadata(
