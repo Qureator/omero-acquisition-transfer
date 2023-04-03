@@ -27,7 +27,7 @@ from omero.model import (
 
 from .channel import export_channel_metadata
 from .common import convert_units
-from .instrument import export_instrument_metadata
+from .instrument import export_instrument_metadata, append_instrument_metadata
 from .roi import export_attach_rois_metadata
 
 
@@ -71,6 +71,10 @@ def export_image_metadata(image_obj: ImageWrapper, conn: BlitzGateway, ome: OME,
             ome.instruments.append(export_instrument_metadata(image_obj.getInstrument()))
 
         image.instrument_ref = instrument_ref
+
+        # There are some exceptional cases -- Light path has dichroic not within instrument
+        # MIP images?
+        append_instrument_metadata(ome, image_obj)
 
     if image_obj.getObjectiveSettings() is not None:
         objective_settings: Optional[ObjectiveSettings] = export_objective_settings_metadata(image_obj.getObjectiveSettings())
