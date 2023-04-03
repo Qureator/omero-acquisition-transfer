@@ -140,10 +140,12 @@ def rename_tiff_paths_by_screen(conn: BlitzGateway, screen_ids: List[int], tiff_
             plate_ids.append(plate.getId())
             tiff_paths_map[plate.getId()] = 'Screen-' + str(screen_id)
 
-    tiff_paths_sorted = rename_tiff_paths_by_plate(conn, plate_ids, tiff_paths)
+    tiff_paths_sorted = [rename_tiff_paths_by_plate(conn, [plate_id], tiff_paths)
+                         for plate_id in plate_ids]
     tiff_paths_sorted = [
         os.path.join(tiff_paths_map[plate_id], value)
-        for plate_id, value in zip(plate_ids, tiff_paths_sorted)
+        for plate_id, values in zip(plate_ids, tiff_paths_sorted)
+        for value in values
     ]
 
     return tiff_paths_sorted
@@ -256,10 +258,12 @@ def rename_tiff_paths_by_project(conn: BlitzGateway, project_ids: List[int], tif
             dataset_ids.append(dataset.getId())
             tiff_paths_map[dataset.getId()] = 'Project-' + str(project.getId())
 
-    tiff_paths_sorted = rename_tiff_paths_by_dataset(conn, dataset_ids, tiff_paths)
+    tiff_paths_sorted = [rename_tiff_paths_by_dataset(conn, dataset_id, tiff_paths)
+                         for dataset_id in dataset_ids]
     tiff_paths_sorted = [
         os.path.join(tiff_paths_map[dataset_id], value)
-        for dataset_id, value in zip(dataset_ids, tiff_paths_sorted)
+        for dataset_id, values in zip(dataset_ids, tiff_paths_sorted)
+        for value in values
     ]
 
     return tiff_paths_sorted
