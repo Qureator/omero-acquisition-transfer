@@ -83,17 +83,19 @@ def create_logical_channel(
     lch_obj = LogicalChannelWrapper(conn, LogicalChannelI())
     lch_obj.save()
 
-    update_metadata(lch_obj, 'name', channel.name)
-    update_metadata(lch_obj, 'samplesPerPixel', channel.samples_per_pixel)
-    update_enum_metadata(lch_obj, 'illumination', channel.illumination_type, 'IlluminationI', conn)
-    update_metadata(lch_obj, 'pinHoleSize', channel.pinhole_size)
-    update_enum_metadata(lch_obj, 'mode', channel.acquisition_mode, 'AcquisitionModeI', conn)
-    update_enum_metadata(lch_obj, 'contrastMethod', channel.contrast_method, 'ContrastMethodI', conn)
-    update_length_metadata(lch_obj, 'excitationWave', channel.excitation_wavelength, channel.excitation_wavelength_unit)
-    update_length_metadata(lch_obj, 'emissionWave', channel.emission_wavelength, channel.emission_wavelength_unit)
-    update_metadata(lch_obj, 'fluor', channel.fluor)
-    update_metadata(lch_obj, 'ndFilter', channel.nd_filter)
-    update_metadata(lch_obj, 'pockelCellSetting', channel.pockel_cell_setting)
+    update_metadata(lch_obj._obj, 'name', channel.name)
+    update_metadata(lch_obj._obj, 'samplesPerPixel', channel.samples_per_pixel)
+    update_enum_metadata(lch_obj._obj, 'illumination', channel.illumination_type, 'IlluminationI', conn)
+    update_metadata(lch_obj._obj, 'pinHoleSize', channel.pinhole_size)
+    update_enum_metadata(lch_obj._obj, 'mode', channel.acquisition_mode, 'AcquisitionModeI', conn)
+    update_enum_metadata(lch_obj._obj, 'contrastMethod', channel.contrast_method, 'ContrastMethodI', conn)
+    update_length_metadata(lch_obj._obj, 'excitationWave', channel.excitation_wavelength, channel.excitation_wavelength_unit)
+    update_length_metadata(lch_obj._obj, 'emissionWave', channel.emission_wavelength, channel.emission_wavelength_unit)
+    update_metadata(lch_obj._obj, 'fluor', channel.fluor)
+    update_metadata(lch_obj._obj, 'ndFilter', channel.nd_filter)
+    update_metadata(lch_obj._obj, 'pockelCellSetting', channel.pockel_cell_setting)
+
+    lch_obj.save()
 
     return lch_obj
 
