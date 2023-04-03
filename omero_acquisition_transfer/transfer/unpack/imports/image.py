@@ -65,7 +65,7 @@ def attach_stage_label_metadata(
 
     image_obj.setStageLabel(sl_obj)
 
-    sl_obj = conn.getUpdateService().saveAndReturnObject(sl_obj)
+    sl_obj = conn.getUpdateService().saveAndReturnObject(sl_obj, conn.SERVICE_OPTS)
     image_obj.setStageLabel(sl_obj)
     image_obj.save()
 
