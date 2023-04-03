@@ -29,9 +29,14 @@ from .common import convert_units
 def append_instrument_metadata(ome: OME, image_obj: ImageWrapper) -> None:
     for ch_obj in image_obj.getChannels():
         lch_obj = ch_obj.getLogicalChannel()
-        lp_obj = lch_obj.getLightPath()
-        dichroic_obj = lp_obj.getDichroic()
+        if lch_obj is None:
+            continue
 
+        lp_obj = lch_obj.getLightPath()
+        if lp_obj is None:
+            continue
+
+        dichroic_obj = lp_obj.getDichroic()
         if dichroic_obj is not None and dichroic_obj.getId() not in ome.instruments[0].dichroics:
             ome.instruments[0].dichroics.append(export_dichroic_metadata(dichroic_obj))
 
