@@ -20,6 +20,7 @@ from omero.model import (
     ChannelI, LightPathI, LightPathEmissionFilterLinkI, LightPathExcitationFilterLinkI,
     LightSettingsI,
     DetectorSettingsI,
+    LogicalChannelI,
 )
 
 from .common import update_metadata, update_length_metadata, update_enum_metadata
@@ -43,7 +44,7 @@ def attach_channels_metadata(
 def attach_channel_metadata(
         channel: Channel, ch_obj: ChannelI, conn: BlitzGateway, omero_id_to_obj: Dict[str, Any]
 ) -> ChannelI:
-    lch_obj = attach_logical_channel_metadata(channel, ch_obj.getLogicalChannel(), conn, omero_id_to_obj)
+    lch_obj = attach_logical_channel_metadata(channel, conn, omero_id_to_obj)
     ch_obj.setLogicalChannel(lch_obj._obj)
     ch_obj.save()
 
@@ -51,19 +52,9 @@ def attach_channel_metadata(
 
 
 def attach_logical_channel_metadata(
-        channel: Channel, lch_obj: LogicalChannelWrapper, conn: BlitzGateway, omero_id_to_obj: Dict[str, Any]
+        channel: Channel, conn: BlitzGateway, omero_id_to_obj: Dict[str, Any]
 ) -> LogicalChannelWrapper:
-    update_metadata(lch_obj, 'name', channel.name)
-    update_metadata(lch_obj, 'samplesPerPixel', channel.samples_per_pixel)
-    update_enum_metadata(lch_obj, 'illumination', channel.illumination_type, 'IlluminationI', conn)
-    update_metadata(lch_obj, 'pinHoleSize', channel.pinhole_size)
-    update_enum_metadata(lch_obj, 'mode', channel.acquisition_mode, 'AcquisitionModeI', conn)
-    update_enum_metadata(lch_obj, 'contrastMethod', channel.contrast_method, 'ContrastMethodI', conn)
-    update_length_metadata(lch_obj, 'excitationWave', channel.excitation_wavelength, channel.excitation_wavelength_unit)
-    update_length_metadata(lch_obj, 'emissionWave', channel.emission_wavelength, channel.emission_wavelength_unit)
-    update_metadata(lch_obj, 'fluor', channel.fluor)
-    update_metadata(lch_obj, 'ndFilter', channel.nd_filter)
-    update_metadata(lch_obj, 'pockelCellSetting', channel.pockel_cell_setting)
+    lch_obj = create_logical_channel(channel, conn)
 
     lp_obj: LightPathWrapper = create_light_path(channel.light_path, lch_obj.getLightPath(), conn, omero_id_to_obj)
     if lp_obj is not None:
@@ -78,6 +69,31 @@ def attach_logical_channel_metadata(
         lch_obj.setDetectorSettings(det_obj._obj)
 
     lch_obj.save()
+
+    return lch_obj
+
+
+def create_logical_channel(
+        channel: Channel,
+        conn: Optional[BlitzGateway] = None
+) -> Optional[LogicalChannelWrapper]:
+    if channel is None:
+        return None
+
+    lch_obj = LogicalChannelWrapper(conn, LogicalChannelI())
+    lch_obj.save()
+
+    update_metadata(lch_obj, 'name', channel.name)
+    update_metadata(lch_obj, 'samplesPerPixel', channel.samples_per_pixel)
+    update_enum_metadata(lch_obj, 'illumination', channel.illumination_type, 'IlluminationI', conn)
+    update_metadata(lch_obj, 'pinHoleSize', channel.pinhole_size)
+    update_enum_metadata(lch_obj, 'mode', channel.acquisition_mode, 'AcquisitionModeI', conn)
+    update_enum_metadata(lch_obj, 'contrastMethod', channel.contrast_method, 'ContrastMethodI', conn)
+    update_length_metadata(lch_obj, 'excitationWave', channel.excitation_wavelength, channel.excitation_wavelength_unit)
+    update_length_metadata(lch_obj, 'emissionWave', channel.emission_wavelength, channel.emission_wavelength_unit)
+    update_metadata(lch_obj, 'fluor', channel.fluor)
+    update_metadata(lch_obj, 'ndFilter', channel.nd_filter)
+    update_metadata(lch_obj, 'pockelCellSetting', channel.pockel_cell_setting)
 
     return lch_obj
 
