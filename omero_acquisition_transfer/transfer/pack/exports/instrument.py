@@ -2,6 +2,7 @@
 
 from typing import Optional, List
 
+from ome_types import OME
 from ome_types.model import (
     Instrument,
     Objective,
@@ -20,8 +21,32 @@ from omero.model import (
     DetectorI, FilterI,
     DichroicI,
 )
+from omero.gateway import ImageWrapper
 
 from .common import convert_units
+
+
+def append_instrument_metadata(ome: OME, image_obj: ImageWrapper) -> None:
+    for ch_obj in image_obj.getChannels():
+        lch_obj = ch_obj.getLogicalChannel()
+        if lch_obj is None:
+            continue
+
+        lp_obj = lch_obj.getLightPath()
+        if lp_obj is None:
+            continue
+
+        dichroic_obj = lp_obj.getDichroic()
+        if dichroic_obj is not None and dichroic_obj.getId() not in ome.instruments[0].dichroics:
+            ome.instruments[0].dichroics.append(export_dichroic_metadata(dichroic_obj))
+
+        for filter_obj in lp_obj.getEmissionFilters():
+            if filter_obj.getId() not in ome.instruments[0].filters:
+                ome.instruments[0].filters.append(export_filter_metadata(filter_obj))
+
+        for filter_obj in lp_obj.getExcitationFilters():
+            if filter_obj.getId() not in ome.instruments[0].filters:
+                ome.instruments[0].filters.append(export_filter_metadata(filter_obj))
 
 
 def export_instrument_metadata(instrument_obj: InstrumentI) -> Instrument:

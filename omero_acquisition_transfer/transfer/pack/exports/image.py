@@ -13,6 +13,7 @@ from ome_types.model import (
     ImagingEnvironment,
     ROIRef,
     StageLabel,
+    Plane,
 )
 from omero.gateway import (
     ImageWrapper,
@@ -23,11 +24,12 @@ from omero.model import (
     ObjectiveSettingsI,
     ImagingEnvironmentI,
     StageLabelI,
+    PlaneInfoI,
 )
 
 from .channel import export_channel_metadata
 from .common import convert_units
-from .instrument import export_instrument_metadata
+from .instrument import export_instrument_metadata, append_instrument_metadata
 from .roi import export_attach_rois_metadata
 
 
@@ -72,6 +74,10 @@ def export_image_metadata(image_obj: ImageWrapper, conn: BlitzGateway, ome: OME,
 
         image.instrument_ref = instrument_ref
 
+        # There are some exceptional cases -- Light path has dichroic not within instrument
+        # MIP images?
+        append_instrument_metadata(ome, image_obj)
+
     if image_obj.getObjectiveSettings() is not None:
         objective_settings: Optional[ObjectiveSettings] = export_objective_settings_metadata(image_obj.getObjectiveSettings())
         image.objective_settings = objective_settings
@@ -88,6 +94,36 @@ def export_image_metadata(image_obj: ImageWrapper, conn: BlitzGateway, ome: OME,
         ome.images.append(image)
 
     return image
+
+
+def export_plane_metadata(pi_obj: PlaneInfoI) -> Plane:
+    plane = Plane(
+        the_c=pi_obj.getTheC(),
+        the_t=pi_obj.getTheT(),
+        the_z=pi_obj.getTheZ(),
+    )
+
+    if pi_obj.getDeltaT() is not None:
+        plane.delta_t = pi_obj.getDeltaT(units='SECOND').getValue()
+        plane.delta_t_unit = convert_units(pi_obj.getDeltaT(units='SECOND').getUnit())
+
+    if pi_obj.getExposureTime() is not None:
+        plane.exposure_time = pi_obj.getExposureTime(units='SECOND').getValue()
+        plane.exposure_time_unit = convert_units(pi_obj.getExposureTime(units='SECOND').getUnit())
+
+    if pi_obj.getPositionX() is not None:
+        plane.position_x = pi_obj.getPositionX().getValue()
+        plane.position_x_unit = convert_units(pi_obj.getPositionX().getUnit())
+
+    if pi_obj.getPositionY() is not None:
+        plane.position_y = pi_obj.getPositionY().getValue()
+        plane.position_y_unit = convert_units(pi_obj.getPositionY().getUnit())
+
+    if pi_obj.getPositionZ() is not None:
+        plane.position_z = pi_obj.getPositionZ().getValue()
+        plane.position_z_unit = convert_units(pi_obj.getPositionZ().getUnit())
+
+    return plane
 
 
 def export_stage_label_metadata(sl_obj: StageLabelI) -> Optional[StageLabel]:
@@ -195,6 +231,10 @@ def export_pixels_metadata(image_obj: ImageWrapper) -> Pixels:
     for ch_obj in image_obj.getChannels():
         channel = export_channel_metadata(ch_obj)
         pixels.channels.append(channel)
+
+    for pi_obj in image_obj.getPrimaryPixels().copyPlaneInfo():
+        plane: Optional[Plane] = export_plane_metadata(pi_obj)
+        pixels.planes.append(plane)
 
     return pixels
 
