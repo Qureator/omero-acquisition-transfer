@@ -95,7 +95,7 @@ def attach_planes_metadata(pixels: Pixels, image_obj: ImageWrapper, conn: BlitzG
     query_service = conn.getQueryService()
     image_obj = query_service.findByQuery(
         "from Image as i left outer join fetch i.pixels p left outer join fetch p.planeInfo "
-        f"where i.id = {image_obj.getId()}", None
+        f"where i.id = {image_obj.getId()}", None, conn.SERVICE_OPTS
     )
 
     for plane in pixels.planes:
