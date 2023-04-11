@@ -1,5 +1,6 @@
 # Copyright (c) 2023 Qureator, Inc. All rights reserved.
 
+import logging
 from typing import Optional, List
 
 from ome_types import OME
@@ -114,7 +115,7 @@ def export_shape_metadata(s_obj) -> Optional[Shape]:
             args['y']: Optional[float] = None if not s_obj.getY() else s_obj.getY().getValue()
             shape = Label(**args)
         elif isinstance(s_obj, MaskI):
-            print('Mask ROIs are not implemented')
+            logging.warn('Mask ROIs are not implemented')
             shape = MaskI(**args)
         else:
             raise NotImplementedError('Unknown ROI type: %s' % s_obj.__class__.__name__)
