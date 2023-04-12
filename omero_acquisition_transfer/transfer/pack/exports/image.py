@@ -1,6 +1,7 @@
 # Copyright (c) 2023 Qureator, Inc. All rights reserved.
 
 from datetime import datetime
+import logging
 from typing import Optional, List
 
 from ome_types import OME
@@ -56,7 +57,7 @@ def export_image_metadata(image_obj: ImageWrapper, conn: BlitzGateway, ome: OME,
             pixels=pixels,
             # roi_ref=rois_ref,
         )
-        print(f"Adding image {id_} to OME")
+        logging.info(f"Adding image {id_} to OME")
     else:
         image = ome.images[indices.index(id_)]
         image.name = name
@@ -64,7 +65,7 @@ def export_image_metadata(image_obj: ImageWrapper, conn: BlitzGateway, ome: OME,
         image.description = desc
         image.pixels = pixels
         # image.roi_ref = roi_ref # Not implemented
-        print(f"Updating image {id_} in OME")
+        logging.info(f"Updating image {id_} in OME")
 
     if image_obj.getInstrument() is not None:
         instrument_ref: Optional[InstrumentRef] = InstrumentRef(id=image_obj.getInstrument().getId())
