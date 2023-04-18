@@ -75,7 +75,7 @@ def export_shape_metadata(s_obj) -> Optional[Shape]:
             'label': None if not s_obj.getTextValue() else s_obj.getTextValue().getValue(),
             'font_family': None if not s_obj.getFontFamily() else s_obj.getFontFamily().getValue(),
             'font_size': None if not s_obj.getFontSize() else s_obj.getFontSize().getValue(),
-            'font_style': None if not s_obj.getFontStyle() else s_obj.getFontStyle().getValue(),
+            'font_style': None if not s_obj.getFontStyle() else s_obj.getFontStyle().getValue().title(),
             'locked': s_obj.getLocked(),
             'the_t': None if not s_obj.getTheT() else s_obj.getTheT().getValue(),
             'the_z': None if not s_obj.getTheZ() else s_obj.getTheZ().getValue(),
