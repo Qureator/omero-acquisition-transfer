@@ -37,7 +37,7 @@ def merge_metadata_tiff(image: ImageWrapper, tiff_path: str) -> None:
     tiff = tifftools.read_tiff(tiff_path)
 
     # Merge metadata to ome object
-    ome = OME(**to_dict(tiff["ifds"][0]["tags"][tifftools.Tag.ImageDescription.value]["data"]))
+    ome = OME(**to_dict(tiff['ifds'][0]['tags'][tifftools.Tag.ImageDescription.value]['data'], parser='lxml'))
 
     ome.instruments.append(instrument)
     ome.images[0].instrument_ref = InstrumentRef(id=ome.instruments[-1].id)
