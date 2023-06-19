@@ -1,3 +1,4 @@
 ome-types>=0.3.2
 omero-py>=5.6.0
 tifftools
+ezomero>=1.2.1
