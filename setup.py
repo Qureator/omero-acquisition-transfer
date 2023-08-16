@@ -13,7 +13,7 @@ URL = "https://github.com/qureator/omero-acquisition-transfer"
 EMAIL = "yunha.shin@qureator.com"
 AUTHOR = "Yunha Shin"
 REQUIRES_PYTHON = ">=3.9.0"
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
