@@ -37,7 +37,18 @@ def merge_metadata_tiff(image: ImageWrapper, tiff_path: str) -> None:
     tiff = tifftools.read_tiff(tiff_path)
 
     # Merge metadata to ome object
-    ome = OME(**to_dict(tiff["ifds"][0]["tags"][tifftools.Tag.ImageDescription.value]["data"]))
+    ome_dict = to_dict(tiff["ifds"][0]["tags"][tifftools.Tag.ImageDescription.value]["data"])
+    if 'structured_annotations' in ome_dict:
+        if not isinstance(ome_dict['structured_annotations'],list):
+            ome_dict['structured_annotations'] = [ome_dict['structured_annotations']]
+        for annot in ome_dict['structured_annotations']:
+            if 'value' in annot:
+                if not isinstance(annot['value']['m'], list):
+                    annot['value']['m'] = [annot['value']['m']]
+                for m in annot['value']['m']:
+                    if 'value' not in m:
+                        m['value'] = ''
+    ome = OME(**ome_dict)
 
     ome.instruments.append(instrument)
     ome.images[0].instrument_ref = InstrumentRef(id=ome.instruments[-1].id)
